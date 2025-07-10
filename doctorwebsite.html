@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. [Doctor's Name] - Medical Services & Appointments</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            color: #334155; /* Dark slate text */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0; /* Light gray track */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8; /* Medium gray thumb */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* Darker gray on hover */
+        }
+        .time-slot-button {
+            @apply bg-indigo-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-200 ease-in-out;
+        }
+        .time-slot-button.booked {
+            @apply bg-red-500 cursor-not-allowed opacity-70;
+        }
+        .time-slot-button.selected {
+            @apply ring-4 ring-indigo-300;
+        }
+        /* Message Box Styling */
+        #messageBox {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #messageBox.show {
+            display: block;
+            opacity: 1;
+        }
+        #messageBox.error {
+            background-color: #f44336; /* Red */
+        }
+        /* Doctor Dashboard specific styling */
+        .doctor-dashboard-table th, .doctor-dashboard-table td {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        .doctor-dashboard-table th {
+            background-color: #e2e8f0;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Message Box for notifications -->
+    <div id="messageBox" class="rounded-lg"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md p-4 md:p-6">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <!-- Logo/Site Title -->
+            <a href="#" class="text-2xl font-bold text-indigo-700 mb-4 md:mb-0">
+                Dr. [Your Name/Clinic Name]
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6">
+                <a href="#" class="text-gray-700 hover:text-indigo-600 font-medium transition duration-300 ease-in-out px-3 py-2 rounded-md hover:bg-gray-100">Home</a>
+                <a href="#services" class="text-gray-700 hover:text-indigo-600 font-medium transition duration-300 ease-in-out px-3 py-2 rounded-md hover:bg-gray-100">Services</a>
+                <a href="#appointments" class="text-gray-700 hover:text-indigo-600 font-medium transition duration-300 ease-in-out px-3 py-2 rounded-md hover:bg-gray-100">Appointments</a>
+                <a href="#testimonials" class="text-gray-700 hover:text-indigo-600 font-medium transition duration-300 ease-in-out px-3 py-2 rounded-md hover:bg-gray-100">Testimonials</a>
+                <a href="#about" class="text-gray-700 hover:text-indigo-600 font-medium transition duration-300 ease-in-out px-3 py-2 rounded-md hover:bg-gray-100">About Us</a>
+                <a href="#contact" class="text-gray-700 hover:text-indigo-600 font-medium transition duration-300 ease-in-out px-3 py-2 rounded-md hover:bg-gray-100">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-16 md:py-24 text-center shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-down">
+                Your Health, Our Priority.
+            </h1>
+            <p class="text-lg md:text-xl mb-8 opacity-90 animate-fade-in-up">
+                Compassionate and expert medical care for a healthier you.
+            </p>
+            <a href="#appointments" class="bg-white text-indigo-700 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 hover:scale-105 transition duration-300 ease-in-out transform">
+                Book an Appointment
+            </a>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <main class="flex-grow container mx-auto px-4 py-12 md:py-16">
+        <section id="services" class="bg-white p-6 md:p-10 rounded-xl shadow-lg mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-indigo-800 mb-6 text-center">
+                Our Medical Services
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">General Consultation</h3>
+                    <p class="text-gray-600">
+                        Comprehensive health check-ups and general medical advice.
+                    </p>
+                </div>
+                <!-- Service Card 2 -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Online Telemedicine</h3>
+                    <p class="text-gray-600">
+                        Convenient virtual consultations from the comfort of your home.
+                    </p>
+                </div>
+                <!-- Service Card 3 -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Preventive Care</h3>
+                    <p class="text-gray-600">
+                        Vaccinations, screenings, and lifestyle guidance for long-term health.
+                    </p>
+                </div>
+                <!-- Add more service cards as needed -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Chronic Disease Management</h3>
+                    <p class="text-gray-600">
+                        Ongoing support and treatment plans for chronic conditions.
+                    </p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Minor Procedures</h3>
+                    <p class="text-gray-600">
+                        In-office minor surgical procedures and wound care.
+                    </p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Diagnostic Services</h3>
+                    <p class="text-gray-600">
+                        Referrals for lab tests and imaging services.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Appointment Booking Section -->
+        <section id="appointments" class="bg-white p-6 md:p-10 rounded-xl shadow-lg mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-indigo-800 mb-6 text-center">
+                Book Your Appointment
+            </h2>
+            <div class="flex flex-col md:flex-row md:space-x-8">
+                <!-- Appointment Type & Date Selection -->
+                <div class="md:w-1/3 mb-8 md:mb-0">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">1. Select Consultation Type</h3>
+                    <div class="flex flex-col space-y-3 mb-6">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="consultationType" value="online" checked class="form-radio text-indigo-600 h-5 w-5">
+                            <span class="ml-2 text-gray-700">Online Consultation (9 AM - 10 PM)</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="consultationType" value="physical" class="form-radio text-indigo-600 h-5 w-5">
+                            <span class="ml-2 text-gray-700">Physical Examination (11 AM - 6 PM)</span>
+                        </label>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">2. Select Date</h3>
+                    <input type="date" id="appointmentDate" class="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="text-sm text-gray-500 mt-2">Please select a date from today onwards.</p>
+                </div>
+
+                <!-- Available Time Slots (Dropdown) -->
+                <div class="md:w-2/3">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">3. Choose a Time Slot</h3>
+                    <select id="timeSlotsDropdown" class="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">-- Select a time slot --</option>
+                        <!-- Time slots will be dynamically loaded here -->
+                    </select>
+                    <p class="text-gray-500 mt-2" id="noSlotsMessage">Select a date and consultation type to see available slots.</p>
+                    <p class="text-sm text-indigo-600 mt-2" id="selectTimePrompt" style="display: block;">Please select a time slot to proceed with booking.</p>
+
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 mt-6">4. Your Details</h3>
+                    <input type="text" id="patientName" class="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 mb-3" placeholder="Your Full Name" required>
+                    <input type="email" id="patientEmail" class="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your Email Address (for confirmation)" required>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 mt-6">5. Reason for Appointment (Optional)</h3>
+                    <textarea id="appointmentReason" class="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="e.g., General check-up, specific symptoms, follow-up..."></textarea>
+
+                    <button id="bookAppointmentBtn" class="mt-8 w-full bg-indigo-700 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105" style="display: none;">
+                        Confirm Booking
+                    </button>
+                    <p id="selectedSlotInfo" class="mt-4 text-center text-indigo-700 font-medium" style="display: none;">
+                        You have selected: <span id="selectedDateTime"></span>
+                    </p>
+                </div>
+            </div>
+            <p id="userIdDisplay" class="text-sm text-gray-500 text-center mt-6">Your User ID: Loading...</p>
+        </section>
+
+        <!-- Patient Testimonials Section -->
+        <section id="testimonials" class="bg-gradient-to-r from-purple-600 to-indigo-500 text-white py-16 md:py-24 text-center shadow-lg mb-12">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold mb-10">What Our Patients Say</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Testimonial Card 1 -->
+                    <div class="bg-white text-gray-800 p-6 rounded-lg shadow-xl transform transition duration-300 hover:scale-105">
+                        <p class="text-lg italic mb-4">"Dr. [Your Name] provided exceptional care. The online consultation was so convenient and thorough. Highly recommend!"</p>
+                        <p class="font-semibold text-indigo-700">- Jane Doe</p>
+                        <div class="text-yellow-500 mt-2">★★★★★</div>
+                    </div>
+                    <!-- Testimonial Card 2 -->
+                    <div class="bg-white text-gray-800 p-6 rounded-lg shadow-xl transform transition duration-300 hover:scale-105">
+                        <p class="text-lg italic mb-4">"The clinic staff are incredibly friendly and helpful. My physical examination was professional and reassuring."</p>
+                        <p class="font-semibold text-indigo-700">- John Smith</p>
+                        <div class="text-yellow-500 mt-2">★★★★★</div>
+                    </div>
+                    <!-- Testimonial Card 3 -->
+                    <div class="bg-white text-gray-800 p-6 rounded-lg shadow-xl transform transition duration-300 hover:scale-105">
+                        <p class="text-lg italic mb-4">"I appreciate the clear communication and personalized attention. It's rare to find such dedicated medical professionals."</p>
+                        <p class="font-semibold text-indigo-700">- Emily White</p>
+                        <div class="text-yellow-500 mt-2">★★★★★</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="bg-white p-6 md:p-10 rounded-xl shadow-lg">
+            <h2 class="text-3xl md:text-4xl font-bold text-indigo-800 mb-6 text-center">
+                About Dr. [Your Name] / Our Clinic
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg text-center max-w-3xl mx-auto">
+                Dr. [Your Name/Clinic Name] is committed to providing exceptional healthcare with a patient-first approach. With years of experience and a passion for well-being, we offer personalized medical solutions in a caring environment. Our mission is to empower you with the knowledge and care needed to lead a healthy life.
+            </p>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="bg-white p-6 md:p-10 rounded-xl shadow-lg mt-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-indigo-800 mb-6 text-center">
+                Contact Us
+            </h2>
+            <div class="max-w-2xl mx-auto text-center">
+                <p class="text-gray-700 mb-4">
+                    Have questions or need assistance? Reach out to us!
+                </p>
+                <p class="text-gray-700 font-semibold mb-2">
+                    Email: <a href="mailto:info@yourclinic.com" class="text-indigo-600 hover:underline">info@yourclinic.com</a>
+                </p>
+                <p class="text-gray-700 font-semibold mb-2">
+                    Phone: <a href="tel:+1234567890" class="text-indigo-600 hover:underline">+1 (234) 567-890</a>
+                </p>
+                <p class="text-gray-700">
+                    Address: 123 Health Ave, Wellness City, 54321
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Doctor Dashboard Access and Section (Hidden by default) -->
+    <section id="doctorAccessSection" class="bg-white p-6 md:p-10 rounded-xl shadow-lg mt-12 mb-12 max-w-md mx-auto">
+        <h2 class="text-2xl font-bold text-indigo-800 mb-4 text-center">Doctor Access</h2>
+        <p class="text-gray-700 text-center mb-4">Enter password to view appointments.</p>
+        <div class="flex flex-col space-y-4">
+            <input type="password" id="doctorPassword" class="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Doctor Password">
+            <button id="accessDashboardBtn" class="w-full bg-indigo-700 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:bg-indigo-800 transition duration-300 ease-in-out">
+                Access Dashboard
+            </button>
+            <p id="passwordError" class="text-red-500 text-center mt-2" style="display: none;">Incorrect password. Please try again.</p>
+        </div>
+    </section>
+
+    <section id="doctorDashboard" class="bg-white p-6 md:p-10 rounded-xl shadow-lg mt-12" style="display: none;">
+        <h2 class="text-3xl md:text-4xl font-bold text-indigo-800 mb-6 text-center">
+            Doctor's Appointment Dashboard
+        </h2>
+        <div id="appointmentsList" class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg shadow-md doctor-dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Patient Name</th>
+                        <th>Patient Email</th>
+                        <th>Reason</th>
+                        <th>Booked By (User ID)</th>
+                        <th>Booking Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Appointments will be loaded here -->
+                    <tr><td colspan="8" class="text-center text-gray-500 py-4">No appointments scheduled.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; 2025 Dr. [Your Name/Clinic Name]. All rights reserved.</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Privacy Policy</a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 ease-in-out">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase variables
+        let app;
+        let db;
+        let auth;
+        let userId;
+        let bookedAppointments = [];
+        let selectedTime = null;
+        let selectedType = 'online'; // Default to online
+        let firebaseReady = false; // New flag to track Firebase initialization status
+
+        // Get app ID and Firebase config from global variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // IMPORTANT: Set your doctor's password here. Choose a strong password!
+        const DOCTOR_PASSWORD = 'your_secure_doctor_password_here'; 
+
+        // Message box utility
+        function showMessage(message, isError = false) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = 'rounded-lg show ' + (isError ? 'error' : '');
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 5000); // Hide after 5 seconds for important messages
+        }
+
+        // Initialize Firebase and set up authentication
+        async function initializeFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Attempt initial sign-in
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Set up auth state change listener AFTER initial sign-in attempt
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        document.getElementById('userIdDisplay').textContent = `Your User ID: ${userId}`;
+                        console.log("Firebase initialized and user authenticated:", userId);
+                        firebaseReady = true; // Set flag to true once user is confirmed
+                        setupAppointmentListeners();
+                    } else {
+                        userId = null;
+                        document.getElementById('userIdDisplay').textContent = `Your User ID: Not authenticated`;
+                        console.log("No user signed in. This might be a transient state or an error.");
+                        firebaseReady = false; // If user becomes null, app is not ready for Firestore ops
+                    }
+                });
+            } catch (error) {
+                console.error("Error initializing Firebase or authenticating:", error);
+                showMessage("Failed to initialize app. Please try again later.", true);
+                firebaseReady = false;
+            }
+        }
+
+        // Setup real-time listener for appointments for both patient and doctor views
+        function setupAppointmentListeners() {
+            const appointmentsCollectionRef = collection(db, `artifacts/${appId}/public/data/appointments`);
+
+            onSnapshot(appointmentsCollectionRef, (snapshot) => {
+                bookedAppointments = snapshot.docs.map(doc => doc.data());
+                console.log("Booked appointments updated:", bookedAppointments);
+                updateAvailableSlots(); // Re-render slots whenever bookings change for patient view
+                // Only load doctor dashboard if it's currently visible (i.e., password entered)
+                if (document.getElementById('doctorDashboard').style.display === 'block') {
+                    loadDoctorDashboard(); 
+                }
+            }, (error) => {
+                console.error("Error listening to appointments:", error);
+                showMessage("Error fetching appointments.", true);
+            });
+        }
+
+        // Function to generate time slots
+        function generateTimeSlots(type) {
+            const slots = [];
+            let startHour, endHour;
+
+            if (type === 'online') {
+                startHour = 9;
+                endHour = 22; // 10 PM
+            } else { // physical
+                startHour = 11;
+                endHour = 18; // 6 PM
+            }
+
+            for (let hour = startHour; hour < endHour; hour++) {
+                for (let minute = 0; minute < 60; minute += 30) { // Every 30 minutes
+                    const hourStr = String(hour).padStart(2, '0');
+                    const minuteStr = String(minute).padStart(2, '0');
+                    slots.push(`${hourStr}:${minuteStr}`);
+                }
+            }
+            return slots;
+        }
+
+        // Function to update available slots display for patient view
+        function updateAvailableSlots() {
+            const appointmentDateInput = document.getElementById('appointmentDate');
+            const timeSlotsDropdown = document.getElementById('timeSlotsDropdown');
+            const noSlotsMessage = document.getElementById('noSlotsMessage');
+            const bookAppointmentBtn = document.getElementById('bookAppointmentBtn');
+            const selectedSlotInfo = document.getElementById('selectedSlotInfo');
+            const selectTimePrompt = document.getElementById('selectTimePrompt');
+
+            const selectedDate = appointmentDateInput.value;
+            selectedType = document.querySelector('input[name="consultationType"]:checked').value;
+
+            // Clear previous options and reset selected time
+            timeSlotsDropdown.innerHTML = '<option value="">-- Select a time slot --</option>';
+            selectedTime = null;
+            bookAppointmentBtn.style.display = 'none';
+            selectedSlotInfo.style.display = 'none';
+            noSlotsMessage.style.display = 'block';
+            selectTimePrompt.style.display = 'block'; // Ensure prompt is visible when slots are reset
+
+
+            // Ensure a date is selected and it's not in the past
+            if (!selectedDate) {
+                noSlotsMessage.textContent = 'Please select a date to see available slots.';
+                return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normalize today to start of day
+            const chosenDate = new Date(selectedDate);
+            chosenDate.setHours(0, 0, 0, 0); // Normalize chosen date to start of day
+
+            if (chosenDate < today) {
+                noSlotsMessage.textContent = 'Cannot book appointments in the past. Please select a future date.';
+                return;
+            }
+
+            // Filter booked slots for the selected date and type
+            const currentBookings = bookedAppointments.filter(booking =>
+                booking.date === selectedDate && booking.time && booking.type === selectedType
+            );
+
+            const allSlots = generateTimeSlots(selectedType);
+
+            if (allSlots.length === 0) {
+                noSlotsMessage.textContent = `No slots available for ${selectedType} consultation on this date.`
+                selectTimePrompt.style.display = 'none'; // No slots, so no need for prompt
+                return;
+            }
+
+            noSlotsMessage.style.display = 'none'; // Hide message if slots are available
+
+            allSlots.forEach(slot => {
+                const isBooked = currentBookings.some(booking => booking.time === slot);
+                const option = document.createElement('option');
+                option.value = slot;
+                option.textContent = slot + (isBooked ? ' (Booked)' : '');
+                if (isBooked) {
+                    option.disabled = true;
+                    option.classList.add('bg-red-200', 'text-red-700'); // Style booked options
+                }
+                timeSlotsDropdown.appendChild(option);
+            });
+        }
+
+        // Function to handle time slot selection from dropdown
+        function selectTimeSlot(time) {
+            selectedTime = time;
+            const selectTimePrompt = document.getElementById('selectTimePrompt');
+
+            if (selectedTime) {
+                const selectedDate = document.getElementById('appointmentDate').value;
+                document.getElementById('selectedDateTime').textContent = `${selectedDate} at ${selectedTime} (${selectedType})`;
+                document.getElementById('bookAppointmentBtn').style.display = 'block';
+                document.getElementById('selectedSlotInfo').style.display = 'block';
+                selectTimePrompt.style.display = 'none'; // Hide prompt
+            } else {
+                document.getElementById('bookAppointmentBtn').style.display = 'none';
+                document.getElementById('selectedSlotInfo').style.display = 'none';
+                selectTimePrompt.style.display = 'block'; // Show prompt
+            }
+        }
+
+        // Function to book the appointment
+        async function bookAppointment() {
+            // Check if Firebase is ready and user is authenticated
+            if (!firebaseReady || !userId) {
+                showMessage("App is not ready or you are not authenticated. Please wait a moment and try again.", true);
+                console.error("Booking failed: Firebase not ready or userId not set. firebaseReady:", firebaseReady, "userId:", userId);
+                return;
+            }
+            if (!selectedTime) {
+                showMessage("Please select a time slot.", true);
+                return;
+            }
+
+            const selectedDate = document.getElementById('appointmentDate').value;
+            const consultationType = document.querySelector('input[name="consultationType"]:checked').value;
+            const patientName = document.getElementById('patientName').value.trim();
+            const patientEmail = document.getElementById('patientEmail').value.trim();
+            const appointmentReason = document.getElementById('appointmentReason').value.trim();
+
+            if (!patientName || !patientEmail) {
+                showMessage("Please fill in your Name and Email for the appointment.", true);
+                return;
+            }
+
+            // Basic email format validation
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(patientEmail)) {
+                showMessage("Please enter a valid email address.", true);
+                return;
+            }
+
+
+            // Check if the slot is already booked (double-check before committing)
+            const isAlreadyBooked = bookedAppointments.some(booking =>
+                booking.date === selectedDate &&
+                booking.time === selectedTime &&
+                booking.type === consultationType
+            );
+
+            if (isAlreadyBooked) {
+                showMessage("This time slot has just been booked by someone else. Please choose another.", true);
+                updateAvailableSlots(); // Refresh slots
+                return;
+            }
+
+            try {
+                console.log("Attempting to book with:", { date: selectedDate, time: selectedTime, type: consultationType, patientName: patientName, patientEmail: patientEmail, reason: appointmentReason, bookedBy: userId });
+                const appointmentsCollectionRef = collection(db, `artifacts/${appId}/public/data/appointments`);
+                await addDoc(appointmentsCollectionRef, {
+                    date: selectedDate,
+                    time: selectedTime,
+                    type: consultationType,
+                    patientName: patientName,
+                    patientEmail: patientEmail,
+                    reason: appointmentReason, // Save the reason
+                    isBooked: true,
+                    bookedBy: userId,
+                    timestamp: new Date()
+                });
+                showMessage(`Appointment booked for ${selectedDate} at ${selectedTime} (${consultationType})!`);
+                
+                // Reset form fields after successful booking
+                document.getElementById('timeSlotsDropdown').value = '';
+                document.getElementById('appointmentReason').value = ''; // Clear the reason field
+                document.getElementById('patientName').value = ''; // Clear patient name
+                document.getElementById('patientEmail').value = ''; // Clear patient email
+                selectedTime = null;
+                document.getElementById('bookAppointmentBtn').style.display = 'none';
+                document.getElementById('selectedSlotInfo').style.display = 'none';
+                document.getElementById('selectTimePrompt').style.display = 'block'; // Show prompt again
+                // The onSnapshot listener will automatically call updateAvailableSlots()
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                showMessage("Error booking appointment. Please try again. Check console for details.", true);
+            }
+        }
+
+        // --- Doctor Dashboard Functions ---
+        function handleDoctorAccess() {
+            const enteredPassword = document.getElementById('doctorPassword').value;
+            const passwordError = document.getElementById('passwordError');
+            const doctorDashboard = document.getElementById('doctorDashboard');
+            const doctorAccessSection = document.getElementById('doctorAccessSection');
+
+            if (enteredPassword === DOCTOR_PASSWORD) {
+                doctorDashboard.style.display = 'block';
+                doctorAccessSection.style.display = 'none'; // Hide the password input section
+                passwordError.style.display = 'none'; // Hide any previous error
+                loadDoctorDashboard(); // Load data once access is granted
+            } else {
+                passwordError.style.display = 'block';
+                showMessage("Incorrect password.", true);
+            }
+        }
+
+        function loadDoctorDashboard() {
+            const appointmentsTableBody = document.querySelector('#doctorDashboard #appointmentsList tbody');
+            appointmentsTableBody.innerHTML = ''; // Clear previous entries
+
+            if (bookedAppointments.length === 0) {
+                appointmentsTableBody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-500 py-4">No appointments scheduled.</td></tr>';
+                return;
+            }
+
+            // Sort appointments by date and then time
+            const sortedAppointments = [...bookedAppointments].sort((a, b) => {
+                const dateTimeA = new Date(`${a.date}T${a.time}:00`);
+                const dateTimeB = new Date(`${b.date}T${b.time}:00`);
+                return dateTimeA - dateTimeB;
+            });
+
+            sortedAppointments.forEach(appointment => {
+                const row = appointmentsTableBody.insertRow();
+                row.innerHTML = `
+                    <td>${appointment.date}</td>
+                    <td>${appointment.time}</td>
+                    <td>${appointment.type}</td>
+                    <td>${appointment.patientName || 'N/A'}</td>
+                    <td>${appointment.patientEmail || 'N/A'}</td>
+                    <td>${appointment.reason || 'N/A'}</td>
+                    <td>${appointment.bookedBy}</td>
+                    <td>${appointment.timestamp ? new Date(appointment.timestamp.toDate()).toLocaleString() : 'N/A'}</td>
+                `;
+            });
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFirebase();
+
+            // Set today's date as min for date input
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('appointmentDate').min = `${year}-${month}-${day}`;
+            document.getElementById('appointmentDate').value = `${year}-${month}-${day}`; // Set default to today
+
+            // Attach event listeners for dynamic elements
+            document.getElementById('appointmentDate').addEventListener('change', updateAvailableSlots);
+            document.getElementById('timeSlotsDropdown').addEventListener('change', (event) => selectTimeSlot(event.target.value));
+            
+            // Attach listeners to radio buttons
+            document.querySelectorAll('input[name="consultationType"]').forEach(radio => {
+                radio.addEventListener('change', updateAvailableSlots);
+            });
+
+            document.getElementById('bookAppointmentBtn').addEventListener('click', bookAppointment);
+            document.getElementById('accessDashboardBtn').addEventListener('click', handleDoctorAccess);
+            document.getElementById('doctorPassword').addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    handleDoctorAccess();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
